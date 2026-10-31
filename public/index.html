@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AR Terminal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="terminal-container">
+        <header class="app-header">
+            <div class="terminal-title">
+                <span class="status-indicator live"></span>
+                <span>AR_TERMINAL_V2</span>
+            </div>
+            <div class="badge">ONLINE</div>
+        </header>
+
+        <div class="controls-panel">
+            <div class="form-group">
+                <label>Mobile Number</label>
+                <input type="text" id="phone-input" placeholder="10-digit Number" maxlength="10">
+            </div>
+
+            <div class="control-grid">
+                <div class="form-group">
+                    <label>Tab</label>
+                    <select id="tab-select">
+                        <option value="OTP-UPI">OTP-UPI</option>
+                        <option value="BANK">BANK</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Range</label>
+                    <select id="range-select">
+                        <option value="500-699">500-699</option>
+                        <option value="700-999">700-999</option>
+                        <option value="1000-1499">1000-1499</option>
+                        <option value="1500-1999">1500-1999</option>
+                        <option value="2001-2999" selected>2001-2999</option>
+                        <option value="3000-4999">3000-4999</option>
+                        <option value="5000-5000">5000</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>App</label>
+                    <select id="pay-select">
+                        <option value="PhonePe">PhonePe</option>
+                        <option value="Paytm">Paytm</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button id="btn-start" class="btn btn-primary">RUN_TASK</button>
+                <button id="btn-stop" class="btn btn-danger">TERMINATE</button>
+            </div>
+        </div>
+
+        <div class="terminal-box">
+            <div class="terminal-bar">
+                <span>SYSTEM_LOGS &gt;</span>
+                <button id="btn-clear" class="btn-text">CLEAR</button>
+            </div>
+            <div id="terminal-screen" class="terminal-screen">
+                <div class="line info">[SYSTEM] Engine Ready...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

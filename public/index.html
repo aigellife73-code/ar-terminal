@@ -1,75 +1,541 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AR Terminal</title>
-    <link rel="stylesheet" href="style.css">
+    <title>ARWallet</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: #f8fafc; color: #1e293b; display: flex; justify-content: center; }
+
+        .app {
+            width: 100%;
+            max-width: 420px;
+            min-height: 100vh;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            padding-bottom: 75px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.06);
+        }
+
+        /* Top Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 18px;
+            background: #ffffff;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 22px;
+            font-weight: 800;
+            color: #d97706;
+        }
+        .header-brand span { color: #1e293b; }
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            color: #64748b;
+        }
+
+        /* Assets Section */
+        .assets-sec {
+            padding: 4px 18px 14px;
+        }
+        .assets-label {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 500;
+        }
+        .assets-val {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-top: 2px;
+        }
+        .assets-val span {
+            font-size: 16px;
+            font-weight: 700;
+            margin-left: 4px;
+        }
+
+        /* Banner */
+        .banner {
+            margin: 0 16px 16px;
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border: 1px solid #bfdbfe;
+            border-radius: 14px;
+            padding: 14px 16px;
+            position: relative;
+        }
+        .banner-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #1e3a8a;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .banner-sub {
+            font-size: 11px;
+            color: #3b82f6;
+            margin-top: 3px;
+            font-weight: 600;
+        }
+
+        /* Quick Action Icons */
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            padding: 0 16px 16px;
+            text-align: center;
+        }
+        .quick-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .quick-icon {
+            width: 44px;
+            height: 44px;
+            background: #f1f5f9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .quick-label {
+            font-size: 11px;
+            color: #475569;
+            font-weight: 600;
+        }
+
+        /* Buy & Sell Cards */
+        .trade-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 0 16px 16px;
+        }
+        .card-buy {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 12px;
+            padding: 14px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .card-buy:active { transform: scale(0.98); }
+        .card-buy .title { font-size: 15px; font-weight: 800; color: #d97706; }
+        .card-buy .sub { font-size: 11px; color: #b45309; margin-top: 4px; }
+
+        .card-sell {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 14px;
+            cursor: pointer;
+        }
+        .card-sell .title { font-size: 15px; font-weight: 800; color: #16a34a; }
+        .card-sell .sub { font-size: 11px; color: #15803d; margin-top: 4px; }
+
+        /* Automation Control Modal/Panel */
+        .control-panel {
+            margin: 0 16px 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 14px;
+        }
+        .cp-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+        .input-group {
+            margin-bottom: 10px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 10px 12px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #0f172a;
+            outline: none;
+        }
+        .input-group input:focus, .input-group select:focus {
+            border-color: #d97706;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+        .btn-start {
+            background: #f59e0b;
+            color: #ffffff;
+            box-shadow: 0 3px 10px rgba(245, 158, 11, 0.35);
+        }
+        .btn-start:active { transform: scale(0.98); }
+        .btn-stop {
+            background: #fee2e2;
+            color: #ef4444;
+            border: 1px solid #fca5a5;
+            margin-top: 8px;
+        }
+
+        /* Order Live Logs Box */
+        .orders-box {
+            margin: 0 16px 14px;
+            padding: 12px;
+            background: #0f172a;
+            border-radius: 12px;
+            color: #f8fafc;
+        }
+        .orders-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .orders-title { font-size: 12px; font-weight: 700; color: #94a3b8; }
+        .log-console {
+            height: 90px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #38bdf8;
+        }
+        .log-console .err { color: #f87171; }
+        .log-console .suc { color: #4ade80; }
+
+        /* Floating Add to desktop Pill */
+        .desktop-pill {
+            margin: 0 16px 16px;
+            background: #fbbf24;
+            border-radius: 30px;
+            padding: 10px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 800;
+            font-size: 13px;
+            color: #78350f;
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.35);
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 420px;
+            height: 60px;
+            background: #ffffff;
+            border-top: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 30;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            font-size: 10px;
+            color: #94a3b8;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .nav-item.active { color: #d97706; }
+        .nav-item .icon { font-size: 18px; }
+        .nav-center-btn {
+            width: 44px;
+            height: 44px;
+            background: #fbbf24;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-top: -16px;
+            box-shadow: 0 4px 10px rgba(251, 191, 36, 0.45);
+        }
+    </style>
 </head>
 <body>
-    <div class="terminal-container">
-        <header class="app-header">
-            <div class="terminal-title">
-                <span class="status-indicator live"></span>
-                <span>AR_TERMINAL_V2</span>
+    <div class="app">
+        <!-- Top App Header -->
+        <div class="header">
+            <div class="header-brand">
+                <span>AR</span>Wallet
             </div>
-            <div class="badge">ONLINE</div>
-        </header>
+            <div class="header-icons">
+                <span id="btn-refresh" title="Refresh">🔄</span>
+                <span>🔔</span>
+            </div>
+        </div>
 
-        <div class="controls-panel">
-            <div class="form-group">
-                <label>Mobile Number</label>
-                <input type="text" id="phone-input" placeholder="10-digit Number" maxlength="10">
+        <!-- Total Assets -->
+        <div class="assets-sec">
+            <div class="assets-label">My total assets</div>
+            <div class="assets-val" id="disp-assets">130.59 <span>ARB</span></div>
+        </div>
+
+        <!-- Banner Notice -->
+        <div class="banner">
+            <div class="banner-title">USDT Deposit Network</div>
+            <div class="banner-sub">Supported: TRC20 / BEP20 (Instant Credit)</div>
+        </div>
+
+        <!-- 4 Quick Actions -->
+        <div class="quick-grid">
+            <div class="quick-item">
+                <div class="quick-icon">📥</div>
+                <div class="quick-label">Buy rules</div>
+            </div>
+            <div class="quick-item">
+                <div class="quick-icon">📤</div>
+                <div class="quick-label">Sell rules</div>
+            </div>
+            <div class="quick-item">
+                <div class="quick-icon">🎧</div>
+                <div class="quick-label">Help Center</div>
+            </div>
+            <div class="quick-item">
+                <div class="quick-icon">💡</div>
+                <div class="quick-label">User</div>
+            </div>
+        </div>
+
+        <!-- Buy & Sell Cards -->
+        <div class="trade-cards">
+            <div class="card-buy" id="card-buy-btn">
+                <div class="title">Buy ARB</div>
+                <div class="sub">Flexible purchasing &gt;</div>
+            </div>
+            <div class="card-sell">
+                <div class="title">Sell ARB</div>
+                <div class="sub">Efficient and fast &gt;</div>
+            </div>
+        </div>
+
+        <!-- Matching & Login Automation Form -->
+        <div class="control-panel">
+            <div class="cp-title">Auto-Matching Setup</div>
+            <div class="input-group">
+                <label>Login Mobile Number</label>
+                <input type="text" id="phone-input" placeholder="Enter 10-digit registered number" maxlength="10">
             </div>
 
-            <div class="control-grid">
-                <div class="form-group">
+            <div class="grid-2">
+                <div class="input-group">
                     <label>Tab</label>
                     <select id="tab-select">
                         <option value="OTP-UPI">OTP-UPI</option>
                         <option value="BANK">BANK</option>
                     </select>
                 </div>
-
-                <div class="form-group">
-                    <label>Range</label>
-                    <select id="range-select">
-                        <option value="500-699">500-699</option>
-                        <option value="700-999">700-999</option>
-                        <option value="1000-1499">1000-1499</option>
-                        <option value="1500-1999">1500-1999</option>
-                        <option value="2001-2999" selected>2001-2999</option>
-                        <option value="3000-4999">3000-4999</option>
-                        <option value="5000-5000">5000</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>App</label>
+                <div class="input-group">
+                    <label>Payment App</label>
                     <select id="pay-select">
                         <option value="PhonePe">PhonePe</option>
                         <option value="Paytm">Paytm</option>
+                        <option value="Navi">Navi</option>
                     </select>
                 </div>
             </div>
 
-            <div class="button-group">
-                <button id="btn-start" class="btn btn-primary">RUN_TASK</button>
-                <button id="btn-stop" class="btn btn-danger">TERMINATE</button>
+            <div class="input-group">
+                <label>Matching Range</label>
+                <select id="range-select">
+                    <option value="500-699">₹ 500 - 699</option>
+                    <option value="700-999">₹ 700 - 999</option>
+                    <option value="1000-1499">₹ 1000 - 1499</option>
+                    <option value="1500-1999">₹ 1500 - 1999</option>
+                    <option value="2001-2999" selected>₹ 2001 - 2999</option>
+                    <option value="3000-4999">₹ 3000 - 4999</option>
+                    <option value="5000-5000">₹ 5000</option>
+                </select>
+            </div>
+
+            <button id="btn-start" class="btn-action btn-start">START BUY ARB MATCH</button>
+            <button id="btn-stop" class="btn-action btn-stop">STOP MATCHING</button>
+        </div>
+
+        <!-- Live Matching Status Console -->
+        <div class="orders-box">
+            <div class="orders-header">
+                <span class="orders-title">Auto Match Logs</span>
+                <span id="active-badge" style="font-size:10px; color:#4ade80;">IDLE</span>
+            </div>
+            <div class="log-console" id="log-box">
+                <div>Ready. Enter number and tap Start...</div>
             </div>
         </div>
 
-        <div class="terminal-box">
-            <div class="terminal-bar">
-                <span>SYSTEM_LOGS &gt;</span>
-                <button id="btn-clear" class="btn-text">CLEAR</button>
+        <!-- Desktop Add Pill -->
+        <div class="desktop-pill">
+            <span>⚡ ARWallet Quick Launcher</span>
+            <span>✕</span>
+        </div>
+
+        <!-- Bottom Navigation Bar -->
+        <div class="bottom-nav">
+            <div class="nav-item active">
+                <span class="icon">🏠</span>
+                <span>Home</span>
             </div>
-            <div id="terminal-screen" class="terminal-screen">
-                <div class="line info">[SYSTEM] Engine Ready...</div>
+            <div class="nav-item">
+                <span class="icon">📋</span>
+                <span>Order</span>
+            </div>
+            <div class="nav-center-btn">
+                ⚡
+            </div>
+            <div class="nav-item">
+                <span class="icon">🎁</span>
+                <span>Rewards</span>
+            </div>
+            <div class="nav-item">
+                <span class="icon">👤</span>
+                <span>My</span>
             </div>
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <script>
+        const phoneInp = document.getElementById("phone-input");
+        const tabSel = document.getElementById("tab-select");
+        const rangeSel = document.getElementById("range-select");
+        const paySel = document.getElementById("pay-select");
+        const logBox = document.getElementById("log-box");
+        const activeBadge = document.getElementById("active-badge");
+
+        function addLog(msg, type="") {
+            const d = document.createElement("div");
+            if (type) d.className = type;
+            d.innerText = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            logBox.appendChild(d);
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        async function pollLogs() {
+            try {
+                const res = await fetch("/api/logs");
+                const data = await res.json();
+                if (data.logs && data.logs.length) {
+                    logBox.innerHTML = "";
+                    data.logs.slice(-15).forEach(l => {
+                        let cls = "";
+                        if (l.includes("Error") || l.includes("closed")) cls = "err";
+                        if (l.includes("MATCH HO GAYA") || l.includes("started")) cls = "suc";
+                        const div = document.createElement("div");
+                        div.className = cls;
+                        div.innerText = l;
+                        logBox.appendChild(div);
+                    });
+                    logBox.scrollTop = logBox.scrollHeight;
+                }
+            } catch(e) {}
+        }
+
+        document.getElementById("btn-start").addEventListener("click", async () => {
+            const phone = phoneInp.value.trim();
+            if (phone.length !== 10) {
+                alert("Please enter a valid 10-digit mobile number!");
+                return;
+            }
+            activeBadge.innerText = "STARTING...";
+            activeBadge.style.color = "#f59e0b";
+            addLog(`Requesting match for ${phone}...`);
+
+            try {
+                const res = await fetch("/api/start", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        phone: phone,
+                        tab: tabSel.value,
+                        range_val: rangeSel.value,
+                        payment_app: paySel.value
+                    })
+                });
+                const d = await res.json();
+                if (res.ok) {
+                    activeBadge.innerText = "MATCHING";
+                    activeBadge.style.color = "#4ade80";
+                    addLog("Auto matching started on server!", "suc");
+                } else {
+                    activeBadge.innerText = "ERROR";
+                    activeBadge.style.color = "#ef4444";
+                    addLog(d.detail || "Failed to start", "err");
+                }
+            } catch(err) {
+                addLog(err.message, "err");
+            }
+        });
+
+        document.getElementById("btn-stop").addEventListener("click", async () => {
+            const phone = phoneInp.value.trim();
+            if (!phone) {
+                alert("Enter phone number to stop!");
+                return;
+            }
+            try {
+                const res = await fetch(`/api/stop/${phone}`, { method: "POST" });
+                const d = await res.json();
+                activeBadge.innerText = "STOPPED";
+                activeBadge.style.color = "#94a3b8";
+                addLog(`Stopped: ${d.status}`);
+            } catch(err) {
+                addLog(err.message, "err");
+            }
+        });
+
+        document.getElementById("btn-refresh").addEventListener("click", () => {
+            location.reload();
+        });
+
+        setInterval(pollLogs, 2500);
+    </script>
 </body>
 </html>
